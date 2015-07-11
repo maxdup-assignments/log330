@@ -1,6 +1,17 @@
 
 
-
+body {
+	width: 300px;
+}
 #save-folder-tree {
 	border: 1px solid #444;
+}
+#caught_link {
+	white-space: nowrap;
+	text-overflow : ellipsis;
+	overflow: hidden;
+}
+.btn {
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
