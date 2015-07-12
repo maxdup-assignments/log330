@@ -27,7 +27,7 @@
 
 </head>
 
-<body>
+<body class="popup_body">
   <div class="container">
   	<div class="row">
       <div class="col-xs-12 text-center" style="overflow: hidden;">
@@ -40,7 +40,7 @@
         <label id="caught_link_author"></label>
       </div>      
   		<div class="col-xs-12 text-center">
-  			<button id="save-button" class="btn btn-primary btn-block">Enregistrer</button>
+  			<button id="savedefault-button" class="btn btn-primary btn-block">Enregistrer</button>
   		</div>
       <div class="col-xs-12 text-center">
         <button id="saveas-button" class="btn btn-primary btn-block">Enregistrer sous...</button>
@@ -49,8 +49,8 @@
         <button id="options-button" class="btn btn-primary btn-block">Préférences</button>
       </div>            
   	</div>
-    <div class="row">
-      <div class="col-xs-12 col-md-6">
+    <div id="save-folder-tree-container" class="row">
+      <div class="col-xs-12">
         <div id="save-folder-tree">
           <ul>
             <li data-jstree='{ "opened" : true }'>Mes sauvegardes
@@ -62,8 +62,19 @@
           </ul>
         </div>
       </div>
+      <div class="col-xs-12 col-md-6">
+        <button class="btn btn-primary btn-save">Enregistrer</button>
+      </div>
     </div>
   </div>
+
+
+    <!--Add a button for the user to click to initiate auth sequence -->
+    <button id="authorize-button">Authorize</button>
+
+    <p><b>These are 5 files from your GDrive :)</b></p>
+    <div id="content"></div>  
   <script src="js/script.js"></script>
+  <script src="js/fileHandling.js"></script>
 </body>
 </html>

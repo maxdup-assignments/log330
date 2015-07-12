@@ -1,7 +1,7 @@
 
 
 body {
-	width: 300px;
+
 }
 #save-folder-tree {
 	border: 1px solid #444;
@@ -14,4 +14,10 @@ body {
 .btn {
 	margin-top: 5px;
 	margin-bottom: 5px;
+}
+body.popup_body #save-folder-tree-container {
+	transition: all 1s;
+	height : 0px;
+	opacity: 0;
+	overflow: hidden;
 }
