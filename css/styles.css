@@ -21,3 +21,15 @@ body.popup_body #save-folder-tree-container {
 	opacity: 0;
 	overflow: hidden;
 }
+
+div#page_info_container {
+  word-break: break-all;
+}
+
+button.btn.disabled {
+	pointer-events: none;
+}
+body.popup_body .jstree-contextmenu {
+	display: none!important;
+	pointer-events: none;
+}

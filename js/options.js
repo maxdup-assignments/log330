@@ -10,8 +10,6 @@ $(function () {
       },
       "types" : {
         "#" : {
-          "max_children" : 2, 
-          "max_depth" : 4, 
           "valid_children" : ["root"]
         },
         "root" : {
@@ -34,12 +32,21 @@ $(function () {
 
     $('#save-folder-tree').jstree(true).settings.core.multiple = false;
 
-    $('#create_node_button').on('click' , function () {
-      create();
-    });
-
     $('#save-folder-tree').on('click' , function() {
-      console.log($(this).jstree('get_selected'));
+      var selectedNode = $(this).jstree('get_selected');
+      console.log(selectedNode);
+      if(typeof(savedPages[selectedNode]) != 'undefined') {
+        var singleSavedPage = savedPages[selectedNode];
+        $.ajax({
+          url: "savedPage.html",
+          context: document.body
+        }).done(function(data) {
+          $('#page_info_container').html(data);
+          $('#page_info_container #page_title').html(singleSavedPage.title);
+          $('#page_info_container #page_url').html(singleSavedPage.url);
+          $('#page_info_container #page_author').html(singleSavedPage.author);
+        });
+      }
     });
     restore_options();
 });
