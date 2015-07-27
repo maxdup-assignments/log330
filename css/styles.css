@@ -1,10 +1,14 @@
 
 
 body {
-
+	max-width: 550px;
+}
+body.popup_body {
+	max-width: 250px;
 }
 #save-folder-tree {
 	border: 1px solid #444;
+	overflow: hidden;
 }
 #caught_link {
 	white-space: nowrap;

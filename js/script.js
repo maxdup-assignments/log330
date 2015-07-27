@@ -2,6 +2,8 @@ src="https://apis.google.com/js/platform.js"
 
 var savedPages = {};
 var testMode = false;
+var tabId = "";
+var tempAuthor = "";
 
 $(function () { 
   $('#save-folder-tree').jstree({
@@ -46,11 +48,19 @@ $(function () {
      return false;
   });
 
+  $("#save-folder-tree").on('refresh.jstree' , function() {
+    $('li[role=treeitem]').each(function() {
+      console.log("id = " + $(this).attr('id'));
+      $(this).find(' > a').attr('id' , $(this).attr('id'));
+      console.log($(this).find(' > a').attr('id'));
+    }); 
+  });
+
 });
 
 function saveLink(sel) {
-  var ref = $('#save-folder-tree').jstree(true)
-  console.log(sel);
+  
+  var ref = $('#save-folder-tree').jstree(true);
   if(!sel.length) { return false; }
   sel = sel[0];
   sel = ref.create_node(sel, {"type":"file"});
@@ -58,27 +68,58 @@ function saveLink(sel) {
     var parent = ref.get_parent(sel);
     var uniqueId = ref.get_children_dom(parent).length + 1;
     ref.set_id(sel , parent + '_' + uniqueId);
+
     ref.edit(sel);
     /*infosAuteur*/
     chrome.tabs.getSelected(null, function(tab) {
       $("#save-folder-tree").jstree('rename_node', parent + '_' + uniqueId , tab.title );
       
-      tempSavedPage = {id : parent + '_' + uniqueId , title : tab.title , url : tab.url , author : "temp"};
+      chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+            method: "getInfos"
+        }, function(response) {
+            if (chrome.runtime.lastError) {
+                // An error occurred :(
+                console.log(chrome.runtime.lastError);
+            } else {
+                // Do something useful with the HTML content
+                tempSavedPage = {id : parent + '_' + uniqueId , title : tab.title , url : tab.url , author : response.author , consultedOn : new Date().toLocaleString() , diffusionDate : response.diffusion };
 
 
-      savedPages[key(tempSavedPage)] = tempSavedPage;
-      console.log(savedPages);
-      $('#caught_link').html(tab.title);
+                savedPages[key(tempSavedPage)] = tempSavedPage;
+                $('#caught_link').html(tab.title);
 
-      save_options();
+                save_options();
+                
+            }
+        });
+      });
     });
+    $('#' + parent + '_' + uniqueId).find('a').attr('id' , parent + '_' + uniqueId + '_anchor');
   }
 }
 
 var key = function(obj){
-  // some unique object-dependent key
-  return obj.id; // just an example
+  return obj.id;
 };
+
+function getFromDOM(item) {
+  chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {
+        method: "get" + item
+    }, function(response) {
+        if (chrome.runtime.lastError) {
+            // An error occurred :(
+            return "test";
+        } else {
+            // Do something useful with the HTML content
+            //console.log(response.htmlContent);
+            return response.htmlContent;
+            
+        }
+    });
+  });
+}
 
 function saveDefault() {
 	saveLink($('#j1_2'));
@@ -113,14 +154,9 @@ $('#options-button').on('click' , function() {
 
 // Saves options to chrome.storage
 function save_options() {
-  if($('#test_mode').length)
-    var testModeState = $('#test_mode').prop('checked');
-  else
-    var testModeState = test_mode;
 
   chrome.storage.sync.set({
     save_folder_tree: $("#save-folder-tree").jstree(true).get_json('#', { 'flat': true }),
-    test_mode: testModeState
   }, function() {
     // Update status to let user know options were saved.
     $('#save-button').html('Sauvegarde complète');
@@ -146,13 +182,9 @@ function save_options() {
 function restore_options() {
   chrome.storage.sync.get({
     save_folder_tree: '',
-    test_mode: ''
   }, function(items) {
     $('#save-folder-tree').jstree(true).settings.core.data = items.save_folder_tree;
-    if(items.test_mode != '')
-      test_mode = items.test_mode;
-    else
-      test_mode = false;
+
 
     if($('#test_mode').length)
       $('#test_mode').prop('checked' , test_mode);
@@ -165,7 +197,7 @@ function restore_options() {
     if(items.saved_pages != 'undefined') {
       savedPages = items.saved_pages;
     }
-  });  
+  }); 
 }
 
 $('#save-button').on('click' , function(){
@@ -173,11 +205,13 @@ $('#save-button').on('click' , function(){
   save_options();
 });
 function create() {
-  var ref = $('#save-folder-tree').jstree(true),
+  var ref = $('#save-folder-tree').jstree(true);
     sel = ref.get_selected();
   if(!sel.length) { return false; }
   sel = sel[0];
-  sel = ref.create_node(sel, {"type":"file"});
+  sel = ref.create_node(sel, {"type":"file"} , "last" , function() {
+    console.log('node created');
+  });
   if(sel) {
     var parent = ref.get_parent(sel);
     var uniqueId = ref.get_children_dom(parent).length + 1;

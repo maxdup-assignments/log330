@@ -34,7 +34,6 @@ $(function () {
 
     $('#save-folder-tree').on('click' , function() {
       var selectedNode = $(this).jstree('get_selected');
-      console.log(selectedNode);
       if(typeof(savedPages[selectedNode]) != 'undefined') {
         var singleSavedPage = savedPages[selectedNode];
         $.ajax({
@@ -45,6 +44,8 @@ $(function () {
           $('#page_info_container #page_title').html(singleSavedPage.title);
           $('#page_info_container #page_url').html(singleSavedPage.url);
           $('#page_info_container #page_author').html(singleSavedPage.author);
+          $('#page_info_container #page_diffused_on').html(singleSavedPage.diffusionDate);
+          $('#page_info_container #page_consulted_on').html(singleSavedPage.consultedOn);
         });
       }
     });
