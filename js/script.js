@@ -217,7 +217,6 @@ function create() {
     var uniqueId = ref.get_children_dom(parent).length + 1;
 
     ref.set_id(sel , parent + '_' + uniqueId);
-    $('#' + parent + '_' + uniqueId).find('a').attr('id' , parent + '_' + uniqueId);
     ref.edit(sel);
   }
 }

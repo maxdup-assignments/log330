@@ -2,6 +2,7 @@
 
 body {
 	min-width: 550px;
+	width : 550px;
 }
 body.popup_body {
 	max-width: 250px;
